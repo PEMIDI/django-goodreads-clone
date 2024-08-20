@@ -12,7 +12,7 @@ SECRET_KEY = Config.SECRET_KEY
 
 DEBUG = Config.DEBUG
 
-ALLOWED_HOSTS = Config.ALLOWED_HOSTS
+ALLOWED_HOSTS = [Config.ALLOWED_HOSTS]
 
 
 # Application definition
