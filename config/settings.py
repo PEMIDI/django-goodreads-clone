@@ -8,11 +8,11 @@ from decouple import config
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = 'django-insecure-=zw!1wlh9i9bra^##o#lpkp#6snx=g7@uefcdss-0xm08ec3+h'
+SECRET_KEY = Config.SECRET_KEY
 
-DEBUG = True
+DEBUG = Config.DEBUG
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = Config.ALLOWED_HOSTS
 
 
 # Application definition
