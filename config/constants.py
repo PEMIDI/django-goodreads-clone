@@ -10,3 +10,13 @@ class Database:
     PASSWORD = 'DATABASE_PASSWORD'
     HOST = 'DATABASE_HOST'
     PORT = 'DATABASE_PORT'
+
+
+class UserType:
+    OPERATOR = 'operator'
+    MEMBER = 'member'
+
+    ROLE_CHOICES = (
+        (OPERATOR, 'Operator'),
+        (MEMBER, 'Member'),
+    )
