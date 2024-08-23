@@ -50,3 +50,14 @@ class Review(models.Model):
         unique_together = (("book", "user"),)
         verbose_name = _('review')
         verbose_name_plural = _('reviews')
+
+
+class Bookmark(models.Model):
+    book = models.ForeignKey(Book, on_delete=models.CASCADE, verbose_name=_('book'), related_name='bookmarks')
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, verbose_name=_('user'), related_name='bookmarks')
+
+    def __str__(self):
+        return f"{self.book} - {self.user}"
+
+    class Meta:
+        unique_together = (("book", "user"),)
