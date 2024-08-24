@@ -3,10 +3,12 @@ from django.utils.translation import gettext_lazy as _
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
 
+from utils.base_model import BaseModel
+
 CustomUser = get_user_model()
 
 
-class Book(models.Model):
+class Book(BaseModel):
     """ 📕 """
     title = models.CharField(max_length=200, verbose_name=_('title'))
     slug = models.SlugField(max_length=200, unique=True, verbose_name=_('slug'))
@@ -22,7 +24,7 @@ class Book(models.Model):
         verbose_name_plural = _('books')
 
 
-class Author(models.Model):
+class Author(BaseModel):
     """ 🖋 """
     first_name = models.CharField(max_length=150, verbose_name=_('first name'))
     last_name = models.CharField(max_length=150, verbose_name=_('last name'))
@@ -31,12 +33,12 @@ class Author(models.Model):
         return f"{self.first_name} {self.last_name}"
 
 
-class BookAuthor(models.Model):
+class BookAuthor(BaseModel):
     book = models.ForeignKey(Book, on_delete=models.CASCADE, verbose_name=_('book'))
     author = models.ForeignKey(Author, on_delete=models.CASCADE, verbose_name=_('author'))
 
 
-class Review(models.Model):
+class Review(BaseModel):
     """ ⭐️⭐️⭐️⭐️⭐️ """
     book = models.ForeignKey(Book, on_delete=models.CASCADE, verbose_name=_('book'), related_name='reviews')
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, verbose_name=_('user'), related_name='reviews')
@@ -56,7 +58,7 @@ class Review(models.Model):
         verbose_name_plural = _('reviews')
 
 
-class Bookmark(models.Model):
+class Bookmark(BaseModel):
     """ 🔖 """
     book = models.ForeignKey(Book, on_delete=models.CASCADE, verbose_name=_('book'), related_name='bookmarks')
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, verbose_name=_('user'), related_name='bookmarks')
