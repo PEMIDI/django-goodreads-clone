@@ -20,3 +20,9 @@ class UserType:
         (OPERATOR, 'Operator'),
         (MEMBER, 'Member'),
     )
+
+
+class Decision:
+    LOGIN = 'login'
+    REGISTER = 'register'
+

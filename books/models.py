@@ -53,6 +53,7 @@ class Review(models.Model):
 
 
 class Bookmark(models.Model):
+    """ 🔖 """
     book = models.ForeignKey(Book, on_delete=models.CASCADE, verbose_name=_('book'), related_name='bookmarks')
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, verbose_name=_('user'), related_name='bookmarks')
 
