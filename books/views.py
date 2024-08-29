@@ -40,5 +40,5 @@ class RetrieveBookAPIView(RetrieveAPIView):
             score_3_count=Count(Case(When(reviews__score=3, then=1), output_field=IntegerField())),
             score_4_count=Count(Case(When(reviews__score=4, then=1), output_field=IntegerField())),
             score_5_count=Count(Case(When(reviews__score=5, then=1), output_field=IntegerField())),
-            reviews_count=Count('reviews'), average_score=Avg('reviews__score')
+            comments_count=Count('reviews__comment'), average_score=Avg('reviews__score')
         )

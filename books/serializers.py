@@ -21,7 +21,7 @@ class UserReviewSerializer(serializers.ModelSerializer):
 
 class BookDetailSerializer(serializers.ModelSerializer):
     reviews = BookReviewSerializer(many=True)
-    reviews_count = serializers.IntegerField(read_only=True)
+    comments_count = serializers.IntegerField(read_only=True)
     average_score = serializers.IntegerField(read_only=True)
     user_reviews = serializers.SerializerMethodField()
     score_1_count = serializers.IntegerField(read_only=True)
@@ -35,7 +35,7 @@ class BookDetailSerializer(serializers.ModelSerializer):
         fields = ['title',
                   'reviews',
                   'user_reviews',
-                  'reviews_count',
+                  'comments_count',
                   'average_score',
                   'score_1_count',
                   'score_2_count',
