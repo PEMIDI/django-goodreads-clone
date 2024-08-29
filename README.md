@@ -279,3 +279,7 @@ at [rashidi.peyman@gmail.com](mailto:rashidi.peyman@gmail.com).
 
 note: This Readme generated using AI by my custom prompt to keep productivity,
 but validated by me generaly.
+
+### By the way, this is my goodreads account. I would be happy if you would like to meet there:
+
+### https://www.goodreads.com/user/show/63726559-peyman-rashidi-pemidi
