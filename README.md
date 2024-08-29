@@ -35,12 +35,6 @@ DEBUG=True
 DATABASE_URL=postgres://user:password@localhost:5432/dbname
 ```
 
-## 🔒 Authentication
-
-To authenticate, use the following endpoints:
-
-- **Token Obtain Pair**: `POST /api/token/`
-- **Token Refresh**: `POST /api/token/refresh/`
 
 ## 🔧 Development
 
