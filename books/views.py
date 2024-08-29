@@ -1,5 +1,10 @@
+from rest_framework import status
+from rest_framework.decorators import action
 from rest_framework.generics import ListAPIView, RetrieveAPIView
 from django.db.models import Count, Exists, OuterRef, Avg, Case, When, IntegerField
+from rest_framework.mixins import RetrieveModelMixin
+from rest_framework.response import Response
+from rest_framework.viewsets import ViewSet, GenericViewSet
 
 from books.models import Book, Bookmark
 from books.paginations import BookStandardPagination
@@ -29,7 +34,7 @@ class BookListAPIView(ListAPIView):
             return BookSerializer
 
 
-class RetrieveBookAPIView(RetrieveAPIView):
+class RetrieveBookViewSet(RetrieveModelMixin, GenericViewSet):
     queryset = Book.objects.all()
     serializer_class = BookDetailSerializer
 
@@ -42,3 +47,18 @@ class RetrieveBookAPIView(RetrieveAPIView):
             score_5_count=Count(Case(When(reviews__score=5, then=1), output_field=IntegerField())),
             comments_count=Count('reviews__comment'), average_score=Avg('reviews__score')
         )
+
+    @action(detail=True, methods=['post'], url_path='bookmark')
+    def add_to_bookmarks(self, request, pk=None):
+        book = self.get_object()
+        user = request.user
+
+        if book.is_bookmarked(user):
+            return Response({"detail": "You have already bookmarked this book."}, status=status.HTTP_400_BAD_REQUEST)
+
+        if book.reviews.filter(user=user).exists():
+            return Response({"detail": "You cannot bookmark a book after commenting or scoring."},
+                            status=status.HTTP_400_BAD_REQUEST)
+
+        Bookmark.objects.create(book=book, user=user)
+        return Response({"detail": "Book bookmarked successfully."}, status=status.HTTP_201_CREATED)
