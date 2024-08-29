@@ -270,17 +270,12 @@ The API uses basic authentication. Include your username and password in the hea
   - `score_5_count`: (integer) Number of 5-star ratings.
 ```
 
-Feel free to adjust the details as needed to better fit the specifics of your API and its functionality.
-
-## 📝 Contributing
-
-Feel free to open issues or pull requests if you have any improvements or bug fixes. Contributions are always welcome!
 
 ## 📧 Contact
 
 For any questions, you can reach out to me, Peyman Rashidi,
 at [rashidi.peyman@gmail.com](mailto:rashidi.peyman@gmail.com).
 
----
+
 
 Feel free to adjust any sections as needed!
