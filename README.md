@@ -268,7 +268,7 @@ The API uses basic authentication. Include your username and password in the hea
   - `score_3_count`: (integer) Number of 3-star ratings.
   - `score_4_count`: (integer) Number of 4-star ratings.
   - `score_5_count`: (integer) Number of 5-star ratings.
-```
+
 
 
 ## 📧 Contact
