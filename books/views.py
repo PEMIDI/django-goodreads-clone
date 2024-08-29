@@ -1,9 +1,15 @@
-from rest_framework.generics import ListAPIView, RetrieveAPIView
+from rest_framework import status, permissions
+from rest_framework.decorators import action
+from rest_framework.generics import ListAPIView
 from django.db.models import Count, Exists, OuterRef, Avg, Case, When, IntegerField
+from rest_framework.mixins import RetrieveModelMixin
+from rest_framework.response import Response
+from rest_framework.viewsets import GenericViewSet
 
-from books.models import Book, Bookmark
+from books.models import Book, Bookmark, Review
 from books.paginations import BookStandardPagination
-from books.serializers import BookSerializer, AuthenticatedUserBookSerializer, BookDetailSerializer
+from books.serializers import BookSerializer, AuthenticatedUserBookSerializer, BookDetailSerializer, \
+    AddReviewSerializer
 
 
 class BookListAPIView(ListAPIView):
@@ -29,7 +35,7 @@ class BookListAPIView(ListAPIView):
             return BookSerializer
 
 
-class RetrieveBookAPIView(RetrieveAPIView):
+class RetrieveBookViewSet(RetrieveModelMixin, GenericViewSet):
     queryset = Book.objects.all()
     serializer_class = BookDetailSerializer
 
@@ -40,5 +46,42 @@ class RetrieveBookAPIView(RetrieveAPIView):
             score_3_count=Count(Case(When(reviews__score=3, then=1), output_field=IntegerField())),
             score_4_count=Count(Case(When(reviews__score=4, then=1), output_field=IntegerField())),
             score_5_count=Count(Case(When(reviews__score=5, then=1), output_field=IntegerField())),
-            reviews_count=Count('reviews'), average_score=Avg('reviews__score')
+            comments_count=Count('reviews__comment'), average_score=Avg('reviews__score')
         )
+
+    @action(detail=True, methods=['post'], url_path='bookmark')
+    def add_to_bookmarks(self, request, pk=None):
+        book = self.get_object()
+        user = request.user
+
+        if book.is_bookmarked(user):
+            return Response({"detail": "You have already bookmarked this book."}, status=status.HTTP_400_BAD_REQUEST)
+
+        if book.reviews.filter(user=user).exists():
+            return Response({"detail": "You cannot bookmark a book after commenting or scoring."},
+                            status=status.HTTP_400_BAD_REQUEST)
+
+        Bookmark.objects.create(book=book, user=user)
+        return Response({"detail": "Book bookmarked successfully."}, status=status.HTTP_201_CREATED)
+
+    @action(detail=True, methods=['post'], url_path='add-review', permission_classes=[permissions.IsAuthenticated])
+    def add_review(self, request, pk=None):
+        book = self.get_object()
+        user = request.user
+        serializer = AddReviewSerializer(data=request.data)
+
+        if serializer.is_valid():
+            # This Transaction is Atomic,but handled as a method into the model
+            review, created = Review.add_or_update_review(
+                book=book,
+                user=user,
+                comment=serializer.validated_data.get('comment'),
+                score=serializer.validated_data.get('score')
+            )
+
+            if created:
+                return Response({'status': 'review added'}, status=status.HTTP_201_CREATED)
+            else:
+                return Response({'status': 'review updated'}, status=status.HTTP_200_OK)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
