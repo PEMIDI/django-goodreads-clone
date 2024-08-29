@@ -4,6 +4,8 @@
 
 Welcome to the **Goodreads Website Clone**! 🎉 This project is a Django-based web application that mimics the functionality of Goodreads. Users can manage books, reviews, and bookmarks in a seamless and intuitive interface.
 
+![img.png](img.png)
+
 ## 🛠️ Installation
 
 To get started, clone the repository and install the necessary packages:
