@@ -9,8 +9,8 @@ Welcome to the **Goodreads Website Clone**! 🎉 This project is a Django-based 
 To get started, clone the repository and install the necessary packages:
 
 ```bash
-git clone https://github.com/PEMIDI/djang-goodreads-clone.git
-cd djang-goodreads-clone
+git clone https://github.com/PEMIDI/django-goodreads-clone.git
+cd django-goodreads-clone
 pip install -r requirements.txt
 ```
 
