@@ -277,4 +277,5 @@ For any questions, you can reach out to me, Peyman Rashidi,
 at [rashidi.peyman@gmail.com](mailto:rashidi.peyman@gmail.com).
 
 
-note: This Readme generated using AI by my custom prompt to keep productivity, but validated by me generaly.
+note: This Readme generated using AI by my custom prompt to keep productivity,
+but validated by me generaly.
