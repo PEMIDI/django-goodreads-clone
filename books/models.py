@@ -1,7 +1,7 @@
 from django.contrib.auth import get_user_model
 from django.utils.translation import gettext_lazy as _
 from django.core.validators import MinValueValidator, MaxValueValidator
-from django.db import models
+from django.db import models, transaction
 
 from utils.base_model import BaseModel
 
@@ -63,6 +63,23 @@ class Review(BaseModel):
         verbose_name = _('review')
         verbose_name_plural = _('reviews')
 
+    @classmethod
+    def add_or_update_review(cls, book, user, comment=None, score=None):
+        with transaction.atomic():
+            review, created = cls.objects.get_or_create(book=book, user=user)
+
+            if comment is not None:
+                review.comment = comment
+            if score is not None:
+                review.score = score
+
+            review.save()
+
+            # Remove bookmark if it exists
+            Bookmark.remove_bookmark(book, user)
+
+            return review, created
+
 
 class Bookmark(BaseModel):
     """ 🔖 """
@@ -76,3 +93,7 @@ class Bookmark(BaseModel):
 
     class Meta:
         unique_together = (("book", "user"),)
+
+    @classmethod
+    def remove_bookmark(cls, book, user):
+        cls.objects.filter(book=book, user=user).delete()  # or .soft_delete()

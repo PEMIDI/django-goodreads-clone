@@ -1,3 +1,4 @@
+from django.db import transaction
 from rest_framework import status, permissions
 from rest_framework.decorators import action
 from rest_framework.generics import ListAPIView, RetrieveAPIView
@@ -70,17 +71,12 @@ class RetrieveBookViewSet(RetrieveModelMixin, GenericViewSet):
         serializer = AddReviewSerializer(data=request.data)
 
         if serializer.is_valid():
-            review, created = Review.objects.get_or_create(
+            review, created = Review.add_or_update_review(
                 book=book,
-                user=user
+                user=user,
+                comment=serializer.validated_data.get('comment'),
+                score=serializer.validated_data.get('score')
             )
-
-            if 'comment' in serializer.validated_data:
-                review.comment = serializer.validated_data['comment']
-            if 'score' in serializer.validated_data:
-                review.score = serializer.validated_data['score']
-
-            review.save()
 
             if created:
                 return Response({'status': 'review added'}, status=status.HTTP_201_CREATED)
