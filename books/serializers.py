@@ -4,6 +4,17 @@ from rest_framework.fields import SerializerMethodField
 from books.models import Book, Author, Bookmark, Review
 
 
+class AddReviewSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Review
+        fields = ['comment', 'score']
+
+    def validate(self, data):
+        if not data.get('comment') and data.get('score') is None:
+            raise serializers.ValidationError("You must provide at least a comment or a score.")
+        return data
+
+
 class BookReviewSerializer(serializers.ModelSerializer):
     class Meta:
         model = Review

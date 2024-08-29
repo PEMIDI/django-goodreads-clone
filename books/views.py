@@ -1,4 +1,4 @@
-from rest_framework import status
+from rest_framework import status, permissions
 from rest_framework.decorators import action
 from rest_framework.generics import ListAPIView, RetrieveAPIView
 from django.db.models import Count, Exists, OuterRef, Avg, Case, When, IntegerField
@@ -6,9 +6,9 @@ from rest_framework.mixins import RetrieveModelMixin
 from rest_framework.response import Response
 from rest_framework.viewsets import ViewSet, GenericViewSet
 
-from books.models import Book, Bookmark
+from books.models import Book, Bookmark, Review
 from books.paginations import BookStandardPagination
-from books.serializers import BookSerializer, AuthenticatedUserBookSerializer, BookDetailSerializer
+from books.serializers import BookSerializer, AuthenticatedUserBookSerializer, BookDetailSerializer, AddReviewSerializer
 
 
 class BookListAPIView(ListAPIView):
@@ -62,3 +62,29 @@ class RetrieveBookViewSet(RetrieveModelMixin, GenericViewSet):
 
         Bookmark.objects.create(book=book, user=user)
         return Response({"detail": "Book bookmarked successfully."}, status=status.HTTP_201_CREATED)
+
+    @action(detail=True, methods=['post'], url_path='add-review', permission_classes=[permissions.IsAuthenticated])
+    def add_review(self, request, pk=None):
+        book = self.get_object()
+        user = request.user
+        serializer = AddReviewSerializer(data=request.data)
+
+        if serializer.is_valid():
+            review, created = Review.objects.get_or_create(
+                book=book,
+                user=user
+            )
+
+            if 'comment' in serializer.validated_data:
+                review.comment = serializer.validated_data['comment']
+            if 'score' in serializer.validated_data:
+                review.score = serializer.validated_data['score']
+
+            review.save()
+
+            if created:
+                return Response({'status': 'review added'}, status=status.HTTP_201_CREATED)
+            else:
+                return Response({'status': 'review updated'}, status=status.HTTP_200_OK)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
