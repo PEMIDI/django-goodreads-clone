@@ -75,7 +75,6 @@ class Review(BaseModel):
 
             review.save()
 
-            # Remove bookmark if it exists
             Bookmark.remove_bookmark(book, user)
 
             return review, created
