@@ -1,15 +1,15 @@
-from django.db import transaction
 from rest_framework import status, permissions
 from rest_framework.decorators import action
-from rest_framework.generics import ListAPIView, RetrieveAPIView
+from rest_framework.generics import ListAPIView
 from django.db.models import Count, Exists, OuterRef, Avg, Case, When, IntegerField
 from rest_framework.mixins import RetrieveModelMixin
 from rest_framework.response import Response
-from rest_framework.viewsets import ViewSet, GenericViewSet
+from rest_framework.viewsets import GenericViewSet
 
 from books.models import Book, Bookmark, Review
 from books.paginations import BookStandardPagination
-from books.serializers import BookSerializer, AuthenticatedUserBookSerializer, BookDetailSerializer, AddReviewSerializer
+from books.serializers import BookSerializer, AuthenticatedUserBookSerializer, BookDetailSerializer, \
+    AddReviewSerializer
 
 
 class BookListAPIView(ListAPIView):
@@ -71,6 +71,7 @@ class RetrieveBookViewSet(RetrieveModelMixin, GenericViewSet):
         serializer = AddReviewSerializer(data=request.data)
 
         if serializer.is_valid():
+            # This Transaction is Atomic,but handled as a method into the model
             review, created = Review.add_or_update_review(
                 book=book,
                 user=user,
